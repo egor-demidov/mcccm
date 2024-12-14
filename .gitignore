@@ -1,0 +1,10 @@
+*
+
+!.gitignore
+!CMakeLists.txt
+!*.json
+!*.h
+!*.cpp
+!*.c
+!*.js
+!geometry/
