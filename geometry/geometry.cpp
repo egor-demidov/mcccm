@@ -119,6 +119,35 @@ double GeometryInterpolator::interpolate_kappa(double filling_angle) const {
         + get_kappa(fa_interpolation.index_hi) * fa_interpolation.weight_hi;
 }
 
+geometry_interfaces::ConstantMeanCurvatureSurface::ConstantMeanCurvatureSurface(
+    double contact_angle,
+    double neck_filling_angle,
+    double r_part
+)
+    : contact_angle{contact_angle}
+    , neck_filling_angle{neck_filling_angle}
+    , r_part{r_part}
+    , liquid_interpolator{contact_angle}
+{
+    GeometryInterpolator neck_interpolator(0.0);
+    neck_volume = neck_interpolator.interpolate_volume(neck_filling_angle) * r_part * r_part * r_part;
+}
+
+geometry_interfaces::GeometryProps geometry_interfaces::ConstantMeanCurvatureSurface::get_liquid_props(double condensate_volume) const {
+    double total_volume = condensate_volume + neck_volume;
+    auto [filling_angle, interpolation] = liquid_interpolator.volume_to_filling_angle(total_volume / (r_part * r_part * r_part));
+    return {
+        .area = liquid_interpolator.interpolate_area(interpolation) * r_part * r_part,
+        .kappa = liquid_interpolator.interpolate_kappa(interpolation) / r_part
+    };
+}
+
+double geometry_interfaces::ConstantMeanCurvatureSurface::get_neck_volume() const {
+    return neck_volume;
+}
+
+
+
 // Unit tests below, compiled only is this is a test target
 // available only in a native build
 #ifdef DO_TEST
@@ -258,6 +287,22 @@ TEST_CASE("generated_geometry tested", "[generated_geometry]") {
     }
 
     // TODO: add catenoid test
+}
+
+TEST_CASE("ConstantMeanCurvatureSurface tested", "[ConstantMeanCurvatureSurface]") {
+    GeometryInterpolator neck_interpolator(0.0);
+    double r_part = 0.1;
+    double neck_volume = neck_interpolator.interpolate_volume(10.0) * r_part * r_part * r_part;
+    double liquid_volume = 2.0 * r_part * M_PI * r_part * r_part - 4.0 / 3.0 * M_PI * r_part * r_part * r_part;
+    double target_area = 2.0 * M_PI * r_part * 2.0 * r_part;
+    double target_kappa = 1.0 / 2.0 / r_part;
+    double condensate_volume = liquid_volume - neck_volume;
+
+    geometry_interfaces::ConstantMeanCurvatureSurface surface_interface(0.0, 10.0, r_part);
+    auto [area, kappa] = surface_interface.get_liquid_props(condensate_volume);
+    REQUIRE_THAT(target_area, Catch::Matchers::WithinAbs(area, 0.000001));
+    REQUIRE_THAT(target_kappa, Catch::Matchers::WithinAbs(kappa, 0.000001));
+    REQUIRE_THAT(neck_volume, Catch::Matchers::WithinAbs(surface_interface.get_neck_volume(), 0.000001));
 }
 
 #endif //DO_TEST

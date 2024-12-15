@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(fmt CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)
 
+option(EMSCRIPTEN "Target emscripten" OFF)
+
 if (${EMSCRIPTEN})
     set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 ${CMAKE_CXX_FLAGS}")
     set(EMSCRIPTEN_LINK_FLAGS "--bind")
@@ -27,7 +29,9 @@ if (${EMSCRIPTEN})
     add_executable(wasm_capillary_condensation main_emscripten.cpp ${AUX_SOURCES})
 else ()
     add_executable(wasm_capillary_condensation main.cpp ${AUX_SOURCES})
-    add_executable(unit_tests ${AUX_SOURCES})
+    add_executable(unit_tests ${AUX_SOURCES}
+            condensation/single_component_system.cpp
+            condensation/single_component_system.h)
     target_compile_definitions(unit_tests PUBLIC DO_TEST=1)
     target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain fmt::fmt Boost::numeric_odeint)
 endif ()

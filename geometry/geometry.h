@@ -81,4 +81,25 @@ private:
     LinearInterpolation ca_interpolation;
 };
 
+namespace geometry_interfaces {
+
+    struct GeometryProps {
+        double area, kappa;
+    };
+
+    class ConstantMeanCurvatureSurface {
+    public:
+        ConstantMeanCurvatureSurface(double contact_angle, double neck_filling_angle, double r_part);
+
+        GeometryProps get_liquid_props(double condensate_volume) const;
+        double get_neck_volume() const;
+
+    private:
+        const double contact_angle, neck_filling_angle, r_part;
+        const GeometryInterpolator liquid_interpolator;
+        double neck_volume;
+    };
+
+}
+
 #endif //WASM_CAPILLARY_CONDENSATION_GEOMETRY_H

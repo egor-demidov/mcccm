@@ -39,4 +39,20 @@ private:
     const double molar_volume;
 };
 
+namespace components {
+
+    // Mosaic condensable components
+    namespace MOSAIC {
+        extern const Component ARO1;
+        extern const Component ARO2;
+        extern const Component ALK1;
+        extern const Component OLE1;
+        extern const Component API1;
+        extern const Component API2;
+        extern const Component LIM1;
+        extern const Component LIM2;
+    }
+
+}
+
 #endif //COMPONENT_H
