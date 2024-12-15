@@ -2,29 +2,30 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "debug-mac",
+      "name": "debug-emscripten",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-debug",
+      "binaryDir": "${sourceDir}/build-debug-emscripten",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "/Users/egor/Software/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "CMAKE_BUILD_TYPE": "Debug"
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{EMSDK_ROOT}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "EMSCRIPTEN": "On"
       },
       "environment": {
-        "PATH": "/Users/egor/Software/emsdk:/Users/egor/Software/emsdk/upstream/emscripten:$penv{PATH}"
+        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{PATH}"
       }
     },
     {
-      "name": "release-mac",
+      "name": "debug-gnu",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-release",
+      "binaryDir": "${sourceDir}/build-debug-gnu",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "/Users/egor/Software/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "EMSCRIPTEN": "Off"
       },
       "environment": {
-        "PATH": "/Users/egor/Software/emsdk:/Users/egor/Software/emsdk/upstream/emscripten:$penv{PATH}"
+        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{PATH}"
       }
     }
   ]

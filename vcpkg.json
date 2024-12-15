@@ -1,10 +1,7 @@
 {
   "dependencies": [
-    {
-      "name": "boost-odeint"
-    },
-    {
-      "name": "fmt"
-    }
+    "boost-odeint",
+    "fmt",
+    "catch2"
   ]
 }

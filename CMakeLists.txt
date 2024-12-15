@@ -6,8 +6,30 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(fmt CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)
 
-set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 ${CMAKE_CXX_FLAGS}")
+if (${EMSCRIPTEN})
+    set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 ${CMAKE_CXX_FLAGS}")
+    set(EMSCRIPTEN_LINK_FLAGS "--bind")
+else ()
+    # Native executables should come with a test executable
+    find_package(Catch2 CONFIG REQUIRED)
+endif ()
 
-add_executable(wasm_capillary_condensation main.cpp geometry/geometry.h)
+set(AUX_SOURCES geometry/geometry.h
+        geometry/generated_geometry.cpp
+        geometry/geometry.cpp
+        condensation/component.cpp
+        condensation/component.h
+        physical_constants.h
+        condensation/multicomponent_system.cpp
+        condensation/multicomponent_system.h)
 
-target_link_libraries(wasm_capillary_condensation PRIVATE --bind fmt::fmt Boost::numeric_odeint)
+if (${EMSCRIPTEN})
+    add_executable(wasm_capillary_condensation main_emscripten.cpp ${AUX_SOURCES})
+else ()
+    add_executable(wasm_capillary_condensation main.cpp ${AUX_SOURCES})
+    add_executable(unit_tests ${AUX_SOURCES})
+    target_compile_definitions(unit_tests PUBLIC DO_TEST=1)
+    target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain fmt::fmt Boost::numeric_odeint)
+endif ()
+
+target_link_libraries(wasm_capillary_condensation PRIVATE ${EMSCRIPTEN_LINK_FLAGS} fmt::fmt Boost::numeric_odeint)

@@ -6,6 +6,7 @@
 #define WASM_CAPILLARY_CONDENSATION_GEOMETRY_H
 
 #include <array>
+#include <exception>
 
 template <unsigned long num_fa, unsigned long num_ca>
 struct Geometry {
@@ -24,5 +25,60 @@ struct Geometry {
 };
 
 #include "generated_geometry.h"
+
+class IndexOutOfBoundsException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Index passed to a getter is out of bounds";
+    }
+};
+
+class InvalidContactAngleException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Invalid contact angle provided to GeometryInterpolator";
+    }
+};
+
+class VolumeOutOfBoundsException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Volume of condensate is out of bounds";
+    }
+};
+
+class FillingAngleOutOfBoundsException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Filling angle of condensate is out of bounds";
+    }
+};
+
+struct LinearInterpolation {
+    unsigned long index_lo, index_hi;
+    double weight_lo, weight_hi;
+};
+
+class GeometryInterpolator {
+public:
+    explicit GeometryInterpolator(double contact_angle);
+
+    double get_filling_angle(unsigned long index) const;
+    double get_volume(unsigned long index) const;
+    double get_area(unsigned long index) const;
+    double get_kappa(unsigned long index) const;
+
+    std::pair<double, LinearInterpolation> volume_to_filling_angle(double volume) const;
+    double interpolate_area(LinearInterpolation const & filling_angle_interpolation) const;
+    double interpolate_kappa(LinearInterpolation const & filling_angle_interpolation) const;
+    LinearInterpolation get_filling_angle_interpolation(double filling_angle) const;
+    double interpolate_volume(double filling_angle) const;
+    double interpolate_area(double filling_angle) const;
+    double interpolate_kappa(double filling_angle) const;
+
+private:
+    const double ca, dca;
+    LinearInterpolation ca_interpolation;
+};
 
 #endif //WASM_CAPILLARY_CONDENSATION_GEOMETRY_H
