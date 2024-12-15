@@ -29,7 +29,7 @@ TEST_CASE("Single component condensation tested",
     auto saturation = [](double) -> double {
         return 1.0;
     };
-    double t_tot = 5000000000000000000000000000.0;
+    double t_tot = 10.0;
 
     geometry_interfaces::ConstantMeanCurvatureSurface geom_interface(ca, neck_fa, r_part);
     SingleComponentSystem system(geom_interface, temperature, saturation, surface_tension, components::MOSAIC::API1);

@@ -34,7 +34,7 @@ public:
     }
 
     double kelvin_length(double temp) const {
-        return sqrt(2.0 * surface_tension * component.get_molar_volume() / gas_constant / temp);
+        return 2.0 * surface_tension * component.get_molar_volume() / gas_constant / temp;
     }
 
     // ODE function to be used with the integrator
@@ -46,11 +46,11 @@ public:
             v_tot = geometry_interface.get_max_liquid_volume();
 
         double temp = temperature(t);
-        auto [area, kappa] = geometry_interface.get_liquid_props(v[0]);
+        auto [area, kappa] = geometry_interface.get_liquid_props(v_tot);
         dvdt[0] = 1.0 / 4.0 * area * thermal_velocity(temp) * component.get_molar_volume()
             * component.get_p_sat(temp) / avogadro_constant / gas_constant / temp
             * (saturation(t) - exp(0.5 * kelvin_length(temp) * kappa));
-        if (v[0] <= 0.0 && dvdt[0] < 0.0)
+        if (v_tot <= 0.0 && dvdt[0] < 0.0)
             dvdt[0] = 0.0;
     }
 
