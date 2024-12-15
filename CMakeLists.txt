@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.28)
 project(wasm_capillary_condensation)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)
 
 option(EMSCRIPTEN "Target emscripten" OFF)
+
+add_compile_definitions(_USE_MATH_DEFINES)
 
 if (${EMSCRIPTEN})
     set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 ${CMAKE_CXX_FLAGS}")

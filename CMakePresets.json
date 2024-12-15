@@ -23,9 +23,16 @@
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "CMAKE_BUILD_TYPE": "Debug",
         "EMSCRIPTEN": "Off"
-      },
-      "environment": {
-        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{PATH}"
+      }
+    },
+    {
+      "name": "debug-win",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-debug-win",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "EMSCRIPTEN": "Off"
       }
     }
   ]

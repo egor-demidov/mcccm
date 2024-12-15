@@ -24,7 +24,7 @@ MulticomponentSystem::MulticomponentSystem(
     , surface_tension{std::move(surface_tension)}
     , neck_geometry_interpolator{0.0}
     , liquid_geometry_interpolator{contact_angle}
-    , num_components{components.size()}
+    , num_components{static_cast<unsigned long>(components.size())}
     , neck_volume{neck_geometry_interpolator.interpolate_volume(neck_filling_angle)}
 {
 }
