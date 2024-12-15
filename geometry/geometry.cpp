@@ -224,4 +224,40 @@ TEST_CASE("GeometryInterpolator tested", "[GeometryInterpolator]") {
     REQUIRE(kappa_x == test_interpolator_3.interpolate_kappa(fa_x));
 }
 
+TEST_CASE("generated_geometry tested", "[generated_geometry]") {
+    // Test that area and volume are increasing with filling angle
+    bool volume_increasing = true;
+    bool area_increasing = true;
+    for (unsigned long ca_index = 0; ca_index < Geometry_t::n_ca; ca_index ++) {
+        double vol_prev = generated_geometry.ca_sets[ca_index].volume[0];
+        double area_prev = generated_geometry.ca_sets[ca_index].area[0];
+        for (unsigned long fa_index = 1; fa_index < Geometry_t::n_fa; fa_index ++) {
+            double vol_new = generated_geometry.ca_sets[ca_index].volume[fa_index];
+            double area_new = generated_geometry.ca_sets[ca_index].area[fa_index];
+            double kappa_new = generated_geometry.ca_sets[ca_index].kappa[fa_index];
+            if (vol_new < vol_prev)
+                volume_increasing = false;
+            if (area_new < area_prev)
+                area_increasing = false;
+            vol_prev = vol_new;
+            area_prev = area_new;
+        }
+    }
+    REQUIRE(volume_increasing);
+    REQUIRE(area_increasing);
+
+    // Test that 0 deg CA and 90 deg FA is a cylinder (if such configuration is available)
+    if (generated_geometry.begin_ca <= 0 && generated_geometry.end_fa >= 90.0) {
+        double target_volume = 2.0 * M_PI - 4.0 / 3.0 * M_PI;
+        double target_area = 4.0 * M_PI;
+        double target_kappa = 1.0 / 2.0;
+        GeometryInterpolator interp(0.0);
+        REQUIRE_THAT(target_volume, Catch::Matchers::WithinAbs(interp.interpolate_volume(90.0), 0.000001));
+        REQUIRE_THAT(target_area, Catch::Matchers::WithinAbs(interp.interpolate_area(90.0), 0.000001));
+        REQUIRE_THAT(target_kappa, Catch::Matchers::WithinAbs(interp.interpolate_kappa(90.0), 0.000001));
+    }
+
+    // TODO: add catenoid test
+}
+
 #endif //DO_TEST
