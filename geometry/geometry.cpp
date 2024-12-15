@@ -131,6 +131,7 @@ geometry_interfaces::ConstantMeanCurvatureSurface::ConstantMeanCurvatureSurface(
 {
     GeometryInterpolator neck_interpolator(0.0);
     neck_volume = neck_interpolator.interpolate_volume(neck_filling_angle) * r_part * r_part * r_part;
+    max_liquid_volume = liquid_interpolator.interpolate_volume(generated_geometry.end_fa) * r_part * r_part * r_part - neck_volume;
 }
 
 geometry_interfaces::GeometryProps geometry_interfaces::ConstantMeanCurvatureSurface::get_liquid_props(double condensate_volume) const {
@@ -144,6 +145,17 @@ geometry_interfaces::GeometryProps geometry_interfaces::ConstantMeanCurvatureSur
 
 double geometry_interfaces::ConstantMeanCurvatureSurface::get_neck_volume() const {
     return neck_volume;
+}
+
+double geometry_interfaces::ConstantMeanCurvatureSurface::get_max_liquid_volume() const {
+    return max_liquid_volume;
+}
+
+
+double geometry_interfaces::ConstantMeanCurvatureSurface::get_filling_angle(double condensate_volume) const {
+    double total_volume = condensate_volume + neck_volume;
+    auto [filling_angle, interpolation] = liquid_interpolator.volume_to_filling_angle(total_volume / (r_part * r_part * r_part));
+    return filling_angle;
 }
 
 

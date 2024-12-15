@@ -38,7 +38,13 @@ public:
     }
 
     // ODE function to be used with the integrator
-    void operator()(const StateBuffer & v, StateBuffer & dvdt, const double t) const {
+    void operator()(StateBuffer const & v, StateBuffer & dvdt, const double t) const {
+
+        double v_tot = v[0];
+
+        if (v_tot > geometry_interface.get_max_liquid_volume())
+            v_tot = geometry_interface.get_max_liquid_volume();
+
         double temp = temperature(t);
         auto [area, kappa] = geometry_interface.get_liquid_props(v[0]);
         dvdt[0] = 1.0 / 4.0 * area * thermal_velocity(temp) * component.get_molar_volume()
@@ -48,11 +54,17 @@ public:
             dvdt[0] = 0.0;
     }
 
+    unsigned long get_num_components() const {
+        return n_components;
+    }
+
 private:
     const GeometryInterface geometry_interface;
     const std::function<double(double)> temperature, saturation;
     const double surface_tension;
     Component component;
+
+    static constexpr unsigned long n_components = 1ul;
 };
 
 #endif //SINGLE_COMPONENT_SYSTEM_H

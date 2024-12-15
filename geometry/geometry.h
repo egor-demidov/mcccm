@@ -91,13 +91,19 @@ namespace geometry_interfaces {
     public:
         ConstantMeanCurvatureSurface(double contact_angle, double neck_filling_angle, double r_part);
 
+        // These methods are required for any geometry interface
         GeometryProps get_liquid_props(double condensate_volume) const;
         double get_neck_volume() const;
+        double get_max_liquid_volume() const;
+
+        // This method is specific to the capillary condensation interface
+        double get_filling_angle(double condensate_volume) const;
 
     private:
         const double contact_angle, neck_filling_angle, r_part;
         const GeometryInterpolator liquid_interpolator;
         double neck_volume;
+        double max_liquid_volume;
     };
 
 }

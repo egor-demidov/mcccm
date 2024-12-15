@@ -105,9 +105,11 @@ TEST_CASE("clausius_clapeyron tested", "[clausius_clapeyron]") {
     double p_ref = 1.0;
     double p_at_higher_temp = clausius_clapeyron(higher_temp, ref_temp, p_ref, 1.0e5);
     double p_at_lower_temp = clausius_clapeyron(lower_temp, ref_temp, p_ref, 1.0e5);
+    double p_ref_temp = clausius_clapeyron(ref_temp, ref_temp, p_ref, 1.0e5);
 
     REQUIRE(p_at_higher_temp > p_ref);
     REQUIRE(p_at_lower_temp < p_ref);
+    REQUIRE(p_ref_temp == p_ref);
 }
 
 #endif //DO_TEST

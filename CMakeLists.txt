@@ -31,7 +31,9 @@ else ()
     add_executable(wasm_capillary_condensation main.cpp ${AUX_SOURCES})
     add_executable(unit_tests ${AUX_SOURCES}
             condensation/single_component_system.cpp
-            condensation/single_component_system.h)
+            condensation/single_component_system.h
+            condensation/run_condensation.cpp
+            condensation/run_condensation.h)
     target_compile_definitions(unit_tests PUBLIC DO_TEST=1)
     target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain fmt::fmt Boost::numeric_odeint)
 endif ()
