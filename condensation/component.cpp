@@ -19,6 +19,15 @@ double clausius_clapeyron(double t_eval, double t_ref, double p_ref, double delt
     return p_ref * exp(delta_h / gas_constant * (1.0 / t_ref - 1.0 / t_eval));
 }
 
+const Component components::TEG(
+    "TEG",
+    1100.0,
+    150.17e-3,
+    [](double temp) -> double {
+        return 101325.0 / 760.0 * pow(10.0, 10.3682 - 4208.28 / (temp - 273.15 + 295.198));
+    }
+);
+
 const Component components::MOSAIC::ARO1(
     "ARO1",
     1000.0,

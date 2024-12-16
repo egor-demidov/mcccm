@@ -32,7 +32,7 @@ TEST_CASE("Single component condensation tested",
     double t_tot = 10.0;
 
     geometry_interfaces::ConstantMeanCurvatureSurface geom_interface(ca, neck_fa, r_part);
-    SingleComponentSystem system(geom_interface, temperature, saturation, surface_tension, components::MOSAIC::API1);
+    SingleComponentSystem system(geom_interface, temperature, saturation, surface_tension, components::TEG);
     CondensationRun run(system, {0.0}, t_tot);
 
     fmt::println("t\tv\tfa");

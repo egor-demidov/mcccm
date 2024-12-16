@@ -41,6 +41,9 @@ private:
 
 namespace components {
 
+    // Real compounds
+    extern const Component TEG;     // Triethylene glycol
+
     // Mosaic condensable components
     namespace MOSAIC {
         extern const Component ARO1;
