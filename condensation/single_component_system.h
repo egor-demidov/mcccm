@@ -48,7 +48,7 @@ public:
         double temp = temperature(t);
         auto [area, kappa] = geometry_interface.get_liquid_props(v_tot);
         dvdt[0] = 1.0 / 4.0 * area * thermal_velocity(temp) * component.get_molar_volume()
-            * component.get_p_sat(temp) / avogadro_constant / gas_constant / temp
+            * component.get_p_sat(temp) / gas_constant / temp
             * (saturation(t) - exp(0.5 * kelvin_length(temp) * kappa));
         if (v_tot <= 0.0 && dvdt[0] < 0.0)
             dvdt[0] = 0.0;

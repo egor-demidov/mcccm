@@ -41,8 +41,8 @@ public:
             throw IncorrectNumberOfComponentsException();
 
         boost::numeric::odeint::runge_kutta4<typename System::StateBuffer> rk;
-        // n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
-        n_steps = forward_euler(system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
+        n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
+        // n_steps = forward_euler(system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
     }
 
     std::vector<typename System::StateBuffer> const & get_solution() const {

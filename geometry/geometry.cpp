@@ -158,6 +158,32 @@ double geometry_interfaces::ConstantMeanCurvatureSurface::get_filling_angle(doub
     return filling_angle;
 }
 
+geometry_interfaces::SphericalSurface::SphericalSurface(double r_part)
+    : r_part{r_part}
+    , core_volume{4.0 / 3.0 * M_PI * r_part * r_part * r_part}
+{}
+
+geometry_interfaces::GeometryProps geometry_interfaces::SphericalSurface::get_liquid_props(double condensate_volume) const {
+    double area = 4.0 * M_PI * r_part * r_part;
+    double r_equivalent = get_equivalent_radius(condensate_volume);
+    double kappa = 1.0 / r_equivalent;
+    return {area, kappa};
+}
+
+// TODO: eliminate this or rename to something more general
+double geometry_interfaces::SphericalSurface::get_neck_volume() const {
+    return core_volume;
+}
+
+double geometry_interfaces::SphericalSurface::get_max_liquid_volume() const { // NOLINT
+    return max_liquid_volume;
+}
+
+double geometry_interfaces::SphericalSurface::get_equivalent_radius(double condensate_volume) const {
+    double total_volume = condensate_volume + core_volume;
+    double r_equivalent = pow(3.0 * total_volume / 4.0 / M_PI, 1.0 / 3.0);
+    return r_equivalent;
+}
 
 
 // Unit tests below, compiled only is this is a test target
@@ -315,6 +341,24 @@ TEST_CASE("ConstantMeanCurvatureSurface tested", "[ConstantMeanCurvatureSurface]
     REQUIRE_THAT(target_area, Catch::Matchers::WithinAbs(area, 0.000001));
     REQUIRE_THAT(target_kappa, Catch::Matchers::WithinAbs(kappa, 0.000001));
     REQUIRE_THAT(neck_volume, Catch::Matchers::WithinAbs(surface_interface.get_neck_volume(), 0.000001));
+
+    // Test filling angle
+    double filling_angle = surface_interface.get_filling_angle(condensate_volume);
+    REQUIRE_THAT(filling_angle, Catch::Matchers::WithinAbs(90.0, 0.000001));
+}
+
+TEST_CASE("SphericalSurface tested", "[SphericalSurface]") {
+    double r_part = 0.1;
+
+    geometry_interfaces::SphericalSurface surface_interface(r_part);
+
+    double condensate_volume = 0.0;
+    double target_equivalent_radius = r_part;
+    double target_area = 4.0 * M_PI * target_equivalent_radius * target_equivalent_radius;
+    double target_kappa = 1.0 / target_equivalent_radius;
+    auto [area, kappa] = surface_interface.get_liquid_props(condensate_volume);
+    REQUIRE_THAT(target_area, Catch::Matchers::WithinAbs(area, 0.000001));
+    REQUIRE_THAT(target_kappa, Catch::Matchers::WithinAbs(kappa, 0.000001));
 }
 
 #endif //DO_TEST

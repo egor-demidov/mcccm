@@ -7,6 +7,7 @@
 
 #include <array>
 #include <exception>
+#include <numeric>
 
 template <unsigned long num_fa, unsigned long num_ca>
 struct Geometry {
@@ -104,6 +105,24 @@ namespace geometry_interfaces {
         const GeometryInterpolator liquid_interpolator;
         double neck_volume;
         double max_liquid_volume;
+    };
+
+    class SphericalSurface {
+    public:
+        explicit SphericalSurface(double r_part);
+
+        // These methods are required for any geometry interface
+        GeometryProps get_liquid_props(double condensate_volume) const;
+        double get_neck_volume() const;
+        double get_max_liquid_volume() const;
+
+        // This method is specific to the spherical condensation interface
+        double get_equivalent_radius(double condensate_volume) const;
+
+    private:
+        const double r_part;
+        const double core_volume;
+        static constexpr double max_liquid_volume = std::numeric_limits<double>::infinity();
     };
 
 }

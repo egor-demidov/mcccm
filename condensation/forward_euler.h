@@ -17,7 +17,7 @@ long forward_euler(Functor system, StateType const & y0, double start_time, doub
 
         // Integrate
         for (std::pair<typename StateType::iterator, typename StateType::const_iterator> iters = std::make_pair(y.begin(), dydt.begin());
-            iters.first != y.end(); ++ iters.first, ++ iters.second) {
+            iters.first != y.end(); ++ iters.first, ++ iters.second) { // NOLINT
 
             (*iters.first) += (*iters.second) * dt;
         }
