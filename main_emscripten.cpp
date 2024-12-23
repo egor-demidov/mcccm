@@ -14,7 +14,9 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
         double ca,
         double surface_tension,
         double temperature,
-        double saturation
+        double saturation,
+        double dt,
+        double t_tot
     ) {
 
     auto temperature_fun = [temperature](double) -> double {
@@ -23,9 +25,8 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
     auto saturation_fun = [saturation](double) -> double {
         return saturation;
     };
-    double t_tot = 1.0;
 
-    SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, components::TEG, r_part, ca, neck_fa, t_tot, 0.001);
+    SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt);
     return cond.get_capillary_condensation_results();
 }
 
