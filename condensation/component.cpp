@@ -15,6 +15,14 @@ Component::Component(std::string name, double density, double molecular_weight, 
     , molar_volume{molecular_weight / density}
 {}
 
+Component::Component(std::string name, double density, double molecular_weight, double p_sat)
+    : name{std::move(name)}
+    , density{density}
+    , molecular_weight{molecular_weight}
+    , p_sat{[p_sat](double) -> double {return p_sat;}}
+    , molar_volume{molecular_weight / density}
+{}
+
 double clausius_clapeyron(double t_eval, double t_ref, double p_ref, double delta_h) {
     return p_ref * exp(delta_h / gas_constant * (1.0 / t_ref - 1.0 / t_eval));
 }

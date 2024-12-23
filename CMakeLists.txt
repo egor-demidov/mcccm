@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.28)
 project(wasm_capillary_condensation)
 
+include(FetchContent)
+FetchContent_Declare(cmake_git_version_tracking
+        GIT_REPOSITORY https://github.com/andrew-hardin/cmake-git-version-tracking.git
+        GIT_TAG 904dbda1336ba4b9a1415a68d5f203f576b696bb
+)
+FetchContent_MakeAvailable(cmake_git_version_tracking)
+
 if (${EMSCRIPTEN})
     # emscripten weirdly fails with C++20
     set(CMAKE_CXX_STANDARD 17)
@@ -52,4 +59,4 @@ else ()
     target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain fmt::fmt Boost::numeric_odeint)
 endif ()
 
-target_link_libraries(wasm_capillary_condensation PRIVATE ${EMSCRIPTEN_LINK_FLAGS} fmt::fmt Boost::numeric_odeint)
+target_link_libraries(wasm_capillary_condensation PRIVATE ${EMSCRIPTEN_LINK_FLAGS} fmt::fmt Boost::numeric_odeint cmake_git_version_tracking)

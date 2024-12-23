@@ -12,6 +12,9 @@ class Component {
 public:
     Component(std::string name, double density, double molecular_weight, std::function<double(double)> p_sat);
 
+    // Constructor for constant vapor pressure for web-app
+    Component(std::string name, double density, double molecular_weight, double p_sat);
+
     std::string const & get_name() const {
         return name;
     }

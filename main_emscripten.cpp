@@ -2,49 +2,57 @@
 #include <numeric>
 
 #include <fmt/format.h>
-#include <boost/numeric/odeint.hpp>
 #include <emscripten/bind.h>
 
-#include "geometry/geometry.h"
-#include "condensation/multicomponent_system.h"
+#include "condensation/condensation_implementations.h"
+#include "git.h"
 
-static constexpr double gam = 0.15;
+std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_component_capillary_condensation(
+        Component const & component,
+        double r_part,
+        double neck_fa,
+        double ca,
+        double surface_tension,
+        double temperature,
+        double saturation
+    ) {
 
-void harmonic_oscillator(const std::vector<double> &x , std::vector<double> &dxdt , const double t [[maybe_unused]])
-{
-    dxdt[0] = x[1];
-    dxdt[1] = -x[0] - gam*x[1];
+    auto temperature_fun = [temperature](double) -> double {
+        return temperature;
+    };
+    auto saturation_fun = [saturation](double) -> double {
+        return saturation;
+    };
+    double t_tot = 1.0;
+
+    SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, components::TEG, r_part, ca, neck_fa, t_tot, 0.001);
+    return cond.get_capillary_condensation_results();
 }
 
-void do_stuff() {
-    Component comp_1 = Component("comp_1", 1000.0, 20e-3, [](double) {return 1000.0;});
-    MulticomponentSystem system(10.0, 0.0, 14e-9, 1.0, [](double) {return 300.0;}, [](double) {return 0.9;}, [](std::vector<double> const &) {return 0.072;}, {comp_1});
-
-    std::vector<double> x(1);
-    x[0] = 0.0000001; // start at x=1.0, p=0.0
-
-    size_t steps = boost::numeric::odeint::integrate( system ,
-                              x , 0.0 , 1.0 , 0.01 );
-
-    fmt::println("Number of steps: {}", steps);
+std::string get_condensation_engine_tag() {
+    return std::string(git::CommitSHA1()) + " (" + std::string(git::Branch()) + ")";
 }
-
-//double get_volume_for_filling_angle(double contact_angle, double filling_angle) {
-//    if (contact_angle < generated_geometry.begin_ca || contact_angle > generated_geometry.end_ca ||
-//        filling_angle < generated_geometry.begin_fa || filling_angle > generated_geometry.end_fa) [[unlikely]]
-//        return std::numeric_limits<double>::quiet_NaN();
-//
-//    unsigned long ca_lo_index = static_cast<unsigned long>((contact_angle - generated_geometry.begin_ca) * static_cast<double>(Geometry_t::n_ca) / (generated_geometry.end_ca - generated_geometry.begin_ca));
-//    fmt::println("{}", ca_lo_index);
-//
-//    return 0.0;
-//}
 
 EMSCRIPTEN_BINDINGS(capillary_condensation) {
-    emscripten::function("do_stuff", &do_stuff);
-    // emscripten::function("get_volume", &get_volume);
-//    emscripten::function("get_volume_for_filling_angle", &get_volume_for_filling_angle);
+    emscripten::function("run_single_component_capillary_condensation", &run_single_component_capillary_condensation);
+    emscripten::function("get_condensation_engine_tag", &get_condensation_engine_tag);
 
-    emscripten::register_vector<double>("VectorDouble");
-//    emscripten::class_<Geometry_t>("Geometry");
+    emscripten::register_vector<SingleComponentCapillaryCondensationRun::Result>("VectorResult");
+
+    emscripten::class_<Component>("Component")
+        .constructor<std::string, double, double, double>()
+        .property("name_readonly", &Component::get_name)
+        .property("density_readonly", &Component::get_density)
+        .property("molecular_weight_readonly", &Component::get_molecular_weight)
+        .function("p_sat", &Component::get_p_sat)
+        .property("molar_volume_readonly", &Component::get_molar_volume);
+
+    emscripten::value_object<SingleComponentCapillaryCondensationRun::Result>("CondensationResult")
+        .field("time", &SingleComponentCapillaryCondensationRun::Result::time)
+        .field("condensate_volume", &SingleComponentCapillaryCondensationRun::Result::condensate_volume)
+        .field("condensate_volume_fraction", &SingleComponentCapillaryCondensationRun::Result::condensate_volume_fraction)
+        .field("uniform_to_capillary_ratio", &SingleComponentCapillaryCondensationRun::Result::uniform_to_capillary_ratio)
+        .field("capillary_filling_angle", &SingleComponentCapillaryCondensationRun::Result::capillary_filling_angle)
+        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Result::uniform_coating_thickness);
+
 }
