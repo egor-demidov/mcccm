@@ -36,7 +36,7 @@ TEST_CASE("Single component condensation tested",
     CondensationRun run(system, {0.0}, t_tot);
 
     fmt::println("t\tv\tfa");
-    for (unsigned long i = 0; i < run.get_n_steps(); i ++) {
+    for (unsigned long i = 0; i < run.get_n_points(); i ++) {
         fmt::println("{}\t{}\t{}", run.get_time()[i], run.get_solution()[i][0], geom_interface.get_filling_angle(run.get_solution()[i][0]));
     }
 }

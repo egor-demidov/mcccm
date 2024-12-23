@@ -9,8 +9,6 @@
 
 #include <boost/numeric/odeint.hpp>
 
-#include "forward_euler.h"
-
 class IncorrectNumberOfComponentsException : std::exception {
     const char * what() const noexcept override {
         return "Incorrect number of components in state arrays passed to CondensationRun()";
@@ -40,9 +38,12 @@ public:
         if (v0.size() != system.get_num_components())
             throw IncorrectNumberOfComponentsException();
 
+        Observer observer(sol_buffer, t_buffer);
         boost::numeric::odeint::runge_kutta4<typename System::StateBuffer> rk;
-        n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
-        // n_steps = forward_euler(system, v0, 0.0, t_tot, 0.001, Observer(sol_buffer, t_buffer));
+        n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, 0.001, observer);
+
+        // Add the final step to the solution buffer
+        observer(v0, t_tot);
     }
 
     std::vector<typename System::StateBuffer> const & get_solution() const {
@@ -55,6 +56,10 @@ public:
 
     unsigned long get_n_steps() const {
         return n_steps;
+    }
+
+    unsigned long get_n_points() const {
+        return get_n_steps() + 1ul;
     }
 
 private:

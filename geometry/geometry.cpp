@@ -158,6 +158,10 @@ double geometry_interfaces::ConstantMeanCurvatureSurface::get_filling_angle(doub
     return filling_angle;
 }
 
+double geometry_interfaces::ConstantMeanCurvatureSurface::get_r_part() const {
+    return r_part;
+}
+
 geometry_interfaces::SphericalSurface::SphericalSurface(double r_part)
     : r_part{r_part}
     , core_volume{4.0 / 3.0 * M_PI * r_part * r_part * r_part}
@@ -170,8 +174,7 @@ geometry_interfaces::GeometryProps geometry_interfaces::SphericalSurface::get_li
     return {area, kappa};
 }
 
-// TODO: eliminate this or rename to something more general
-double geometry_interfaces::SphericalSurface::get_neck_volume() const {
+double geometry_interfaces::SphericalSurface::get_core_volume() const {
     return core_volume;
 }
 
@@ -185,6 +188,9 @@ double geometry_interfaces::SphericalSurface::get_equivalent_radius(double conde
     return r_equivalent;
 }
 
+double geometry_interfaces::SphericalSurface::get_r_part() const {
+    return r_part;
+}
 
 // Unit tests below, compiled only is this is a test target
 // available only in a native build
@@ -192,6 +198,7 @@ double geometry_interfaces::SphericalSurface::get_equivalent_radius(double conde
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
+
 
 TEST_CASE("GeometryInterpolator tested", "[GeometryInterpolator]") {
     // Test filling andle getters four boundary cases

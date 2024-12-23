@@ -52,6 +52,8 @@ public:
             * (saturation(t) - exp(0.5 * kelvin_length(temp) * kappa));
         if (v_tot <= 0.0 && dvdt[0] < 0.0)
             dvdt[0] = 0.0;
+        if (v_tot >= geometry_interface.get_max_liquid_volume() && dvdt[0] > 0.0)
+            dvdt[0] = 0.0;
     }
 
     unsigned long get_num_components() const {

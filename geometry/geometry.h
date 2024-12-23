@@ -94,11 +94,12 @@ namespace geometry_interfaces {
 
         // These methods are required for any geometry interface
         GeometryProps get_liquid_props(double condensate_volume) const;
-        double get_neck_volume() const;
         double get_max_liquid_volume() const;
 
         // This method is specific to the capillary condensation interface
         double get_filling_angle(double condensate_volume) const;
+        double get_neck_volume() const;
+        double get_r_part() const;
 
     private:
         const double contact_angle, neck_filling_angle, r_part;
@@ -113,11 +114,12 @@ namespace geometry_interfaces {
 
         // These methods are required for any geometry interface
         GeometryProps get_liquid_props(double condensate_volume) const;
-        double get_neck_volume() const;
         double get_max_liquid_volume() const;
 
         // This method is specific to the spherical condensation interface
+        double get_core_volume() const;
         double get_equivalent_radius(double condensate_volume) const;
+        double get_r_part() const;
 
     private:
         const double r_part;
