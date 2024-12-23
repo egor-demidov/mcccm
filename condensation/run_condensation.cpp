@@ -33,12 +33,10 @@ TEST_CASE("Single component condensation tested",
 
     geometry_interfaces::ConstantMeanCurvatureSurface geom_interface(ca, neck_fa, r_part);
     SingleComponentSystem system(geom_interface, temperature, saturation, surface_tension, components::TEG);
-    CondensationRun run(system, {0.0}, t_tot);
+    CondensationRun run(system, {0.0}, t_tot, 0.01);
 
-    fmt::println("t\tv\tfa");
-    for (unsigned long i = 0; i < run.get_n_points(); i ++) {
-        fmt::println("{}\t{}\t{}", run.get_time()[i], run.get_solution()[i][0], geom_interface.get_filling_angle(run.get_solution()[i][0]));
-    }
+    double target_fa = 55.64623269487302;
+    REQUIRE_THAT(target_fa, Catch::Matchers::WithinAbs(geom_interface.get_filling_angle(run.get_solution().back()[0]), 0.000001));
 }
 
 TEST_CASE("Single component condensation tested",
@@ -50,18 +48,16 @@ TEST_CASE("Single component condensation tested",
         return 300.0;
     };
     auto saturation = [](double) -> double {
-        return 5.0;
+        return 1.5;
     };
-    double t_tot = 10.0;
+    double t_tot = 1.0;
 
     geometry_interfaces::SphericalSurface geom_interface(r_part);
     SingleComponentSystem system(geom_interface, temperature, saturation, surface_tension, components::TEG);
-    CondensationRun run(system, {0.0}, t_tot);
+    CondensationRun run(system, {0.0}, t_tot, 0.01);
 
-    // fmt::println("t\tv\tfa");
-    // for (unsigned long i = 0; i < run.get_n_steps(); i ++) {
-    //     fmt::println("{}\t{}\t{}", run.get_time()[i], run.get_solution()[i][0], geom_interface.get_equivalent_radius(run.get_solution()[i][0]));
-    // }
+    double target_r_equiv = 2.281894653033472e-07;
+    REQUIRE_THAT(target_r_equiv, Catch::Matchers::WithinAbs(geom_interface.get_equivalent_radius(run.get_solution().back()[0]), 0.000001));
 }
 
 #endif //DO_TEST

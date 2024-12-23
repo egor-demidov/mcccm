@@ -34,13 +34,13 @@ public:
         }
     };
 
-    CondensationRun(System const & system, typename System::StateBuffer v0, double t_tot) {
+    CondensationRun(System const & system, typename System::StateBuffer v0, double t_tot, double dt) {
         if (v0.size() != system.get_num_components())
             throw IncorrectNumberOfComponentsException();
 
         Observer observer(sol_buffer, t_buffer);
         boost::numeric::odeint::runge_kutta4<typename System::StateBuffer> rk;
-        n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, 0.001, observer);
+        n_steps = boost::numeric::odeint::integrate_const(rk, system, v0, 0.0, t_tot, dt, observer);
 
         // Add the final step to the solution buffer
         observer(v0, t_tot);

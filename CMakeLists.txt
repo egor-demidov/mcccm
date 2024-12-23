@@ -30,6 +30,8 @@ set(AUX_SOURCES geometry/geometry.h
         condensation/single_component_system.h
         condensation/run_condensation.cpp
         condensation/run_condensation.h
+        condensation/condensation_implementations.cpp
+        condensation/condensation_implementations.h
 )
 
 if (${EMSCRIPTEN})

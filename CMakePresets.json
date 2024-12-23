@@ -12,7 +12,7 @@
         "EMSCRIPTEN": "On"
       },
       "environment": {
-        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{PATH}"
+        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{EMSDK_ROOT}/upstream/bin:$penv{PATH}"
       }
     },
     {
