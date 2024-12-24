@@ -7,6 +7,33 @@
 #include "condensation/condensation_implementations.h"
 #include "git.h"
 
+double thermal_velocity(double temp, Component const & component) {
+    return sqrt(8.0 * gas_constant * temp / M_PI / component.get_molecular_weight());
+}
+
+double estimate_characteristic_condensation_rate(
+        Component const & component,
+        double r_part,
+        double temperature,
+        double saturation
+    ) {
+
+    // Characteristic area - surface of a monomer
+    const double area = 4.0 * M_PI * r_part * r_part * r_part;
+    return 1.0 / 4.0 * area * thermal_velocity(temperature, component) * component.get_molar_volume()
+            * component.get_p_sat(temperature) / gas_constant / temperature * saturation;
+}
+
+static constexpr double TIMESTEP_FACTOR = 1.0e-32;
+static constexpr unsigned long N_POINTS =  50;
+
+class LargeTimestepException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Timestep too large - increase the simulation time";
+    }
+};
+
 std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_component_capillary_condensation(
         Component const & component,
         double r_part,
@@ -15,7 +42,6 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
         double surface_tension,
         double temperature,
         double saturation,
-        double dt,
         double t_tot
     ) {
 
@@ -26,7 +52,19 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
         return saturation;
     };
 
-    SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt);
+    // Timestep inversely proportional to the characteristic condensation rate
+    const double dt = TIMESTEP_FACTOR / estimate_characteristic_condensation_rate(component, r_part, temperature, saturation);
+
+    if (2.0 * dt >= t_tot)
+        throw LargeTimestepException();
+
+    const unsigned long n_steps = static_cast<unsigned long>(t_tot / dt);
+    const unsigned long dump_period = n_steps / (N_POINTS - 1);
+
+    SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt, dump_period);
+
+    fmt::println("Number of points: {}", cond.get_capillary_condensation_results().size());
+
     return cond.get_capillary_condensation_results();
 }
 

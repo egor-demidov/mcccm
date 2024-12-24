@@ -31,7 +31,8 @@ public:
         double contact_angle,
         double neck_filling_angle,
         double t_tot,
-        double dt
+        double dt,
+        unsigned long dump_period = 1ul
     );
 
     std::vector<Result> const & get_capillary_condensation_results() const;

@@ -15,10 +15,9 @@ let ca = 0.0;
 let surface_tension = 0.05
 let temperature = 300.0;
 let saturation = 1.0
-let dt = 0.001
 let t_tot = 1.0
 
-let result = module.run_single_component_capillary_condensation(componentInstance, r_part, neck_fa, ca, surface_tension, temperature, saturation, dt, t_tot)
+let result = module.run_single_component_capillary_condensation(componentInstance, r_part, neck_fa, ca, surface_tension, temperature, saturation, t_tot)
 
 for (let i = 0; i < result.size(); i ++) {
     console.log(result.get(i))

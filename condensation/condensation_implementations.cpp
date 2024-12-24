@@ -13,14 +13,15 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
     double contact_angle,
     double neck_filling_angle,
     double t_tot,
-    double dt
+    double dt,
+    unsigned long dump_period
 )
     : spherical_surface{r_part}
     , constant_mean_curvature_surface{contact_angle, neck_filling_angle, r_part}
     , spherical_single_component_system{spherical_surface, temperature, saturation, surface_tension, component}
     , constant_mean_curvature_single_component_system{constant_mean_curvature_surface, temperature, saturation, surface_tension, component}
-    , spherical_condensation_run{spherical_single_component_system, {0.0}, t_tot, dt}
-    , constant_mean_curvature_condensation_run{constant_mean_curvature_single_component_system, {0.0}, t_tot, dt}
+    , spherical_condensation_run{spherical_single_component_system, {0.0}, t_tot, dt, dump_period}
+    , constant_mean_curvature_condensation_run{constant_mean_curvature_single_component_system, {0.0}, t_tot, dt, dump_period}
 {
     condensation_results.resize(spherical_condensation_run.get_n_points());
 
