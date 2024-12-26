@@ -27,13 +27,6 @@ double estimate_characteristic_condensation_rate(
 static constexpr double TIMESTEP_FACTOR = 1.0e-32;
 static constexpr unsigned long N_POINTS =  50;
 
-class LargeTimestepException : public std::exception {
-public:
-    const char * what() const noexcept override {
-        return "Timestep too large - increase the residence time";
-    }
-};
-
 struct CapillaryCondensationResult {
     std::vector<SingleComponentCapillaryCondensationRun::Solution> solution;
     unsigned long n_steps;
@@ -71,9 +64,6 @@ CapillaryCondensationResult run_single_component_capillary_condensation(
 
     // Timestep inversely proportional to the characteristic condensation rate
     const double dt = TIMESTEP_FACTOR / estimate_characteristic_condensation_rate(component, r_part, temperature, saturation);
-
-    if (2.0 * dt >= t_tot)
-        throw LargeTimestepException();
 
     const unsigned long n_steps = static_cast<unsigned long>(t_tot / dt);
     if (n_steps < N_POINTS)
