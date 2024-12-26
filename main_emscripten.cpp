@@ -76,7 +76,7 @@ CapillaryCondensationResult run_single_component_capillary_condensation(
         throw LargeTimestepException();
 
     const unsigned long n_steps = static_cast<unsigned long>(t_tot / dt);
-    if (n_steps < N_POINTS * 2)
+    if (n_steps < N_POINTS)
         throw ResidenceTimeTooLowException();
 
     const unsigned long dump_period = n_steps / (N_POINTS - 1);
