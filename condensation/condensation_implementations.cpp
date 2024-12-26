@@ -25,6 +25,8 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
 {
     condensation_results.resize(spherical_condensation_run.get_n_points());
 
+    n_points = spherical_condensation_run.get_n_points();
+
     for (unsigned long n = 0; n < spherical_condensation_run.get_n_points(); n ++) {
         const double time = spherical_condensation_run.get_time()[n];
         const double capillary_condensate_volume = constant_mean_curvature_condensation_run.get_solution()[n][0];
@@ -46,7 +48,9 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
             condensate_volume_fraction,
             uniform_to_capillary_ratio,
             capillary_filling_angle,
-            uniform_coating_thickness
+            uniform_coating_thickness,
+            capillary_condensate_volume,
+            spherical_condensate_volume
         };
     }
 }

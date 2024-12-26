@@ -100,7 +100,9 @@ EMSCRIPTEN_BINDINGS(capillary_condensation) {
         .field("condensate_volume_fraction", &SingleComponentCapillaryCondensationRun::Solution::condensate_volume_fraction)
         .field("uniform_to_capillary_ratio", &SingleComponentCapillaryCondensationRun::Solution::uniform_to_capillary_ratio)
         .field("capillary_filling_angle", &SingleComponentCapillaryCondensationRun::Solution::capillary_filling_angle)
-        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Solution::uniform_coating_thickness);
+        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Solution::uniform_coating_thickness)
+        .field("capillary_condensate_volume", &SingleComponentCapillaryCondensationRun::Solution::capillary_condensate_volume)
+        .field("uniform_condensate_volume", &SingleComponentCapillaryCondensationRun::Solution::uniform_condensate_volume);
 
     emscripten::value_object<CapillaryCondensationResult>("CapillaryCondensationResult")
         .field("solution", &CapillaryCondensationResult::solution)
