@@ -20,6 +20,8 @@ public:
         double uniform_to_capillary_ratio;
         double capillary_filling_angle;
         double uniform_coating_thickness;
+        unsigned long n_steps;
+        double dt;
     };
 
     SingleComponentCapillaryCondensationRun(

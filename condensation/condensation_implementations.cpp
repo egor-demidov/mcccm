@@ -46,7 +46,9 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
             condensate_volume_fraction,
             uniform_to_capillary_ratio,
             capillary_filling_angle,
-            uniform_coating_thickness
+            uniform_coating_thickness,
+            static_cast<unsigned long>(t_tot / dt),
+            dt
         };
     }
 }

@@ -90,6 +90,7 @@ EMSCRIPTEN_BINDINGS(capillary_condensation) {
         .field("condensate_volume_fraction", &SingleComponentCapillaryCondensationRun::Result::condensate_volume_fraction)
         .field("uniform_to_capillary_ratio", &SingleComponentCapillaryCondensationRun::Result::uniform_to_capillary_ratio)
         .field("capillary_filling_angle", &SingleComponentCapillaryCondensationRun::Result::capillary_filling_angle)
-        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Result::uniform_coating_thickness);
-
+        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Result::uniform_coating_thickness)
+        .field("n_steps", &SingleComponentCapillaryCondensationRun::Result::n_steps)
+        .field("dt", &SingleComponentCapillaryCondensationRun::Result::dt);
 }
