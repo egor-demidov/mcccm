@@ -11,6 +11,10 @@ double thermal_velocity(double temp, Component const & component) {
     return sqrt(8.0 * gas_constant * temp / M_PI / component.get_molecular_weight());
 }
 
+double kelvin_length(double surface_tension, double temperature, Component const & component) {
+    return 2.0 * surface_tension * component.get_molar_volume() / gas_constant / temperature;
+}
+
 double estimate_characteristic_condensation_rate(
         Component const & component,
         double r_part,
@@ -31,6 +35,7 @@ struct CapillaryCondensationResult {
     std::vector<SingleComponentCapillaryCondensationRun::Solution> solution;
     unsigned long n_steps;
     double dt;
+    double chi;
 };
 
 std::string get_condensation_engine_tag() {
@@ -76,7 +81,8 @@ CapillaryCondensationResult run_single_component_capillary_condensation(
     return {
         .solution = cond.get_capillary_condensation_results(),
         .n_steps = n_steps,
-        .dt = dt
+        .dt = dt,
+        .chi = kelvin_length(surface_tension, temperature, component) / r_part / (saturation - 1.0)
     };
 }
 
@@ -107,5 +113,6 @@ EMSCRIPTEN_BINDINGS(capillary_condensation) {
     emscripten::value_object<CapillaryCondensationResult>("CapillaryCondensationResult")
         .field("solution", &CapillaryCondensationResult::solution)
         .field("n_steps", &CapillaryCondensationResult::n_steps)
-        .field("dt", &CapillaryCondensationResult::dt);
+        .field("dt", &CapillaryCondensationResult::dt)
+        .field("chi", &CapillaryCondensationResult::chi);
 }
