@@ -46,14 +46,12 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
             condensate_volume_fraction,
             uniform_to_capillary_ratio,
             capillary_filling_angle,
-            uniform_coating_thickness,
-            static_cast<unsigned long>(t_tot / dt),
-            dt
+            uniform_coating_thickness
         };
     }
 }
 
-std::vector<SingleComponentCapillaryCondensationRun::Result> const & SingleComponentCapillaryCondensationRun::get_capillary_condensation_results() const {
+std::vector<SingleComponentCapillaryCondensationRun::Solution> const & SingleComponentCapillaryCondensationRun::get_capillary_condensation_results() const {
     return condensation_results;
 }
 

@@ -13,15 +13,13 @@
 class SingleComponentCapillaryCondensationRun {
 public:
 
-    struct Result {
+    struct Solution {
         double time;
         double condensate_volume;
         double condensate_volume_fraction;
         double uniform_to_capillary_ratio;
         double capillary_filling_angle;
         double uniform_coating_thickness;
-        unsigned long n_steps;
-        double dt;
     };
 
     SingleComponentCapillaryCondensationRun(
@@ -37,7 +35,7 @@ public:
         unsigned long dump_period = 1ul
     );
 
-    std::vector<Result> const & get_capillary_condensation_results() const;
+    std::vector<Solution> const & get_capillary_condensation_results() const;
     unsigned long get_n_points() const;
 
 private:
@@ -54,7 +52,7 @@ private:
     const CondensationRun<SingleComponentSystem<geometry_interfaces::ConstantMeanCurvatureSurface>> constant_mean_curvature_condensation_run;
 
     // Post-processed results
-    std::vector<Result> condensation_results;
+    std::vector<Solution> condensation_results;
     unsigned long n_points;
 };
 

@@ -34,16 +34,26 @@ public:
     }
 };
 
-std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_component_capillary_condensation(
-        Component const & component,
-        double r_part,
-        double neck_fa,
-        double ca,
-        double surface_tension,
-        double temperature,
-        double saturation,
-        double t_tot
-    ) {
+struct CapillaryCondensationResult {
+    std::vector<SingleComponentCapillaryCondensationRun::Solution> solution;
+    unsigned long n_steps;
+    double dt;
+};
+
+std::string get_condensation_engine_tag() {
+    return std::string(git::CommitSHA1()) + " (" + std::string(git::Branch()) + ")";
+}
+
+CapillaryCondensationResult run_single_component_capillary_condensation(
+    Component const & component,
+    double r_part,
+    double neck_fa,
+    double ca,
+    double surface_tension,
+    double temperature,
+    double saturation,
+    double t_tot
+) {
 
     auto temperature_fun = [temperature](double) -> double {
         return temperature;
@@ -63,18 +73,18 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
 
     SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt, dump_period);
 
-    return cond.get_capillary_condensation_results();
-}
-
-std::string get_condensation_engine_tag() {
-    return std::string(git::CommitSHA1()) + " (" + std::string(git::Branch()) + ")";
+    return {
+        .solution = cond.get_capillary_condensation_results(),
+        .n_steps = n_steps,
+        .dt = dt
+    };
 }
 
 EMSCRIPTEN_BINDINGS(capillary_condensation) {
     emscripten::function("run_single_component_capillary_condensation", &run_single_component_capillary_condensation);
     emscripten::function("get_condensation_engine_tag", &get_condensation_engine_tag);
 
-    emscripten::register_vector<SingleComponentCapillaryCondensationRun::Result>("VectorResult");
+    emscripten::register_vector<SingleComponentCapillaryCondensationRun::Solution>("VectorResult");
 
     emscripten::class_<Component>("Component")
         .constructor<std::string, double, double, double>()
@@ -84,13 +94,16 @@ EMSCRIPTEN_BINDINGS(capillary_condensation) {
         .function("p_sat", &Component::get_p_sat)
         .property("molar_volume_readonly", &Component::get_molar_volume);
 
-    emscripten::value_object<SingleComponentCapillaryCondensationRun::Result>("CondensationResult")
-        .field("time", &SingleComponentCapillaryCondensationRun::Result::time)
-        .field("condensate_volume", &SingleComponentCapillaryCondensationRun::Result::condensate_volume)
-        .field("condensate_volume_fraction", &SingleComponentCapillaryCondensationRun::Result::condensate_volume_fraction)
-        .field("uniform_to_capillary_ratio", &SingleComponentCapillaryCondensationRun::Result::uniform_to_capillary_ratio)
-        .field("capillary_filling_angle", &SingleComponentCapillaryCondensationRun::Result::capillary_filling_angle)
-        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Result::uniform_coating_thickness)
-        .field("n_steps", &SingleComponentCapillaryCondensationRun::Result::n_steps)
-        .field("dt", &SingleComponentCapillaryCondensationRun::Result::dt);
+    emscripten::value_object<SingleComponentCapillaryCondensationRun::Solution>("CondensationSolution")
+        .field("time", &SingleComponentCapillaryCondensationRun::Solution::time)
+        .field("condensate_volume", &SingleComponentCapillaryCondensationRun::Solution::condensate_volume)
+        .field("condensate_volume_fraction", &SingleComponentCapillaryCondensationRun::Solution::condensate_volume_fraction)
+        .field("uniform_to_capillary_ratio", &SingleComponentCapillaryCondensationRun::Solution::uniform_to_capillary_ratio)
+        .field("capillary_filling_angle", &SingleComponentCapillaryCondensationRun::Solution::capillary_filling_angle)
+        .field("uniform_coating_thickness", &SingleComponentCapillaryCondensationRun::Solution::uniform_coating_thickness);
+
+    emscripten::value_object<CapillaryCondensationResult>("CapillaryCondensationResult")
+        .field("solution", &CapillaryCondensationResult::solution)
+        .field("n_steps", &CapillaryCondensationResult::n_steps)
+        .field("dt", &CapillaryCondensationResult::dt);
 }
