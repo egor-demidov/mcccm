@@ -23,7 +23,7 @@ option(EMSCRIPTEN "Target emscripten" OFF)
 add_compile_definitions(_USE_MATH_DEFINES)
 
 if (${EMSCRIPTEN})
-    set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-s EXPORT_ES6=1 -s MODULARIZE=1 -s EXPORT_EXCEPTION_HANDLING_HELPERS=1 -fexceptions ${CMAKE_CXX_FLAGS}")
     set(EMSCRIPTEN_LINK_FLAGS "--bind")
 else ()
     # Native executables should come with a test executable

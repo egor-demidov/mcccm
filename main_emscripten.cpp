@@ -30,7 +30,7 @@ static constexpr unsigned long N_POINTS =  50;
 class LargeTimestepException : public std::exception {
 public:
     const char * what() const noexcept override {
-        return "Timestep too large - increase the simulation time";
+        return "Timestep too large - increase the residence time";
     }
 };
 
@@ -43,6 +43,13 @@ struct CapillaryCondensationResult {
 std::string get_condensation_engine_tag() {
     return std::string(git::CommitSHA1()) + " (" + std::string(git::Branch()) + ")";
 }
+
+class ResidenceTimeTooLowException : public std::exception {
+public:
+    const char * what() const noexcept override {
+        return "Residence time too low for this system";
+    }
+};
 
 CapillaryCondensationResult run_single_component_capillary_condensation(
     Component const & component,
@@ -69,6 +76,9 @@ CapillaryCondensationResult run_single_component_capillary_condensation(
         throw LargeTimestepException();
 
     const unsigned long n_steps = static_cast<unsigned long>(t_tot / dt);
+    if (n_steps < N_POINTS * 2)
+        throw ResidenceTimeTooLowException();
+
     const unsigned long dump_period = n_steps / (N_POINTS - 1);
 
     SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt, dump_period);
