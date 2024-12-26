@@ -63,8 +63,6 @@ std::vector<SingleComponentCapillaryCondensationRun::Result> run_single_componen
 
     SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt, dump_period);
 
-    fmt::println("Number of points: {}", cond.get_capillary_condensation_results().size());
-
     return cond.get_capillary_condensation_results();
 }
 
