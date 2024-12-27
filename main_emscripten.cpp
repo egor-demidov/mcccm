@@ -36,6 +36,7 @@ struct CapillaryCondensationResult {
     unsigned long n_steps;
     double dt;
     double chi;
+    double capillary_condensation_threshold;
 };
 
 std::string get_condensation_engine_tag() {
@@ -78,11 +79,14 @@ CapillaryCondensationResult run_single_component_capillary_condensation(
 
     SingleComponentCapillaryCondensationRun cond(temperature_fun, saturation_fun, surface_tension, component, r_part, ca, neck_fa, t_tot, dt, dump_period);
 
+    const double l_k = kelvin_length(surface_tension, temperature, component);
+
     return {
         .solution = cond.get_capillary_condensation_results(),
         .n_steps = n_steps,
         .dt = dt,
-        .chi = kelvin_length(surface_tension, temperature, component) / r_part / (saturation - 1.0)
+        .chi = l_k / r_part / (saturation - 1.0),
+        .capillary_condensation_threshold = saturation - exp(1.0 / 2.0 * l_k / r_part)
     };
 }
 
