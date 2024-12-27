@@ -118,5 +118,6 @@ EMSCRIPTEN_BINDINGS(capillary_condensation) {
         .field("solution", &CapillaryCondensationResult::solution)
         .field("n_steps", &CapillaryCondensationResult::n_steps)
         .field("dt", &CapillaryCondensationResult::dt)
-        .field("chi", &CapillaryCondensationResult::chi);
+        .field("chi", &CapillaryCondensationResult::chi)
+        .field("capillary_condensation_threshold", &CapillaryCondensationResult::capillary_condensation_threshold);
 }
