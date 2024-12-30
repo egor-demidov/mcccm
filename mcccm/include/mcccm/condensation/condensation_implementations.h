@@ -10,7 +10,7 @@
 #include "single_component_system.h"
 #include "../geometry/geometry.h"
 
-class SingleComponentCapillaryCondensationRun {
+class SingleComponentCombinedCondensationRun {
 public:
 
     struct Solution {
@@ -24,7 +24,7 @@ public:
         double uniform_condensate_volume;
     };
 
-    SingleComponentCapillaryCondensationRun(
+    SingleComponentCombinedCondensationRun(
         std::function<double(double)> const & temperature,
         std::function<double(double)> const & saturation,
         double surface_tension,

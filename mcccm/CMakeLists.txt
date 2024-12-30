@@ -31,3 +31,14 @@ set(SOURCES ${MCCCM_SRC})
 set(HEADERS_PUBLIC ${MCCCM_INCLUDE})
 
 include(${PROJECT_SOURCE_DIR}/cmake/LibraryConfig.cmake)
+
+# Generate an executable with unit tests
+add_executable(mcccm_unit_tests ${MCCCM_SRC} ${MCCCM_INCLUDE})
+target_include_directories(mcccm_unit_tests PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+        $<INSTALL_INTERFACE:include>
+)
+target_compile_features(mcccm_unit_tests PUBLIC cxx_std_20)
+target_compile_definitions(mcccm_unit_tests PUBLIC DO_TEST=1)
+target_link_libraries(mcccm_unit_tests PRIVATE Catch2::Catch2WithMain fmt::fmt Boost::numeric_odeint)

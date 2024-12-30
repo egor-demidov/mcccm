@@ -4,7 +4,7 @@
 
 #include <mcccm/condensation/condensation_implementations.h>
 
-SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun(
+SingleComponentCombinedCondensationRun::SingleComponentCombinedCondensationRun(
     std::function<double(double)> const & temperature,
     std::function<double(double)> const & saturation,
     double surface_tension,
@@ -52,11 +52,11 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
     }
 }
 
-std::vector<SingleComponentCapillaryCondensationRun::Solution> const & SingleComponentCapillaryCondensationRun::get_capillary_condensation_results() const {
+std::vector<SingleComponentCombinedCondensationRun::Solution> const & SingleComponentCombinedCondensationRun::get_capillary_condensation_results() const {
     return condensation_results;
 }
 
-unsigned long SingleComponentCapillaryCondensationRun::get_n_points() const {
+unsigned long SingleComponentCombinedCondensationRun::get_n_points() const {
     return n_points;
 }
 
@@ -68,7 +68,7 @@ unsigned long SingleComponentCapillaryCondensationRun::get_n_points() const {
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
 
-TEST_CASE("Testing SingleComponentCapillaryCondensationRun", "[SingleComponentCapillaryCondensationRun]") {
+TEST_CASE("Testing SingleComponentCombinedCondensationRun", "[SingleComponentCombinedCondensationRun]") {
     // Geometry interface
     double r_part = 14.0e-9;
     double neck_fa = 10.0;
@@ -82,7 +82,7 @@ TEST_CASE("Testing SingleComponentCapillaryCondensationRun", "[SingleComponentCa
     };
     double t_tot = 1.0;
 
-    SingleComponentCapillaryCondensationRun cond(temperature, saturation, surface_tension, components::TEG, r_part, ca, neck_fa, t_tot, 0.001);
+    SingleComponentCombinedCondensationRun cond(temperature, saturation, surface_tension, components::TEG, r_part, ca, neck_fa, t_tot, 0.001);
 
     // There should be no uniform condensate
     REQUIRE_THAT(0.0, Catch::Matchers::WithinAbs(cond.get_capillary_condensation_results()[cond.get_n_points() - 1].uniform_coating_thickness, 0.000001));

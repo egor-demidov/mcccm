@@ -1,5 +1,5 @@
 //
-// Created by egor on 12/15/24.
+// Created by egor on 12/14/24.
 //
 
 #include <mcccm/condensation/single_component_system.h>
@@ -14,6 +14,7 @@
 
 TEST_CASE("SingleComponentSystem with ConstantMeanCurvatureSurface geometry interface tested",
     "[SingleComponentSystem<ConstantMeanCurvatureSurface>]") {
+
     // Geometry interface
     double r_part = 14.0e-9;
     double neck_fa = 10.0;
@@ -44,3 +45,4 @@ TEST_CASE("SingleComponentSystem with ConstantMeanCurvatureSurface geometry inte
 }
 
 #endif //DO_TEST
+

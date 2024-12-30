@@ -11,51 +11,112 @@
 #include "../physical_constants.h"
 #include "../geometry/geometry.h"
 
+template <typename GeometryInterface>
 class MulticomponentSystem {
 public:
     using StateBuffer = std::vector<double>;
 
     MulticomponentSystem(
-        double neck_filling_angle,
-        double contact_angle,
-        double particle_radius,
-        double residence_time,
+        GeometryInterface geometry_interface,
         std::function<double(double)> temperature,
-        std::function<double(double)> saturation,
-        std::function<double(std::vector<double> const &)> surface_tension,
+        std::function<double(double, unsigned long)> saturation,
+        std::function<double(StateBuffer const &)> surface_tension,
         std::vector<Component> components
-    );
+    )
+        : geometry_interface{std::move(geometry_interface)}
+        , temperature{std::move(temperature)}
+        , saturation{std::move(saturation)}
+        , surface_tension{std::move(surface_tension)}
+        , components{std::move(components)}
+        , n_components{this->components.size()}
+    {}
 
     unsigned long get_num_components() const {
-        return num_components;
+        return n_components;
     }
 
-    double thermal_velocity(double temperature) const {
-        return sqrt(8.0 * gas_constant * temperature / M_PI / components[0].get_molecular_weight());
+    double get_average_molar_volume(StateBuffer const & mole_fractions) const {
+        double average_moler_volume = 0.0;
+        for (unsigned long i = 0; i < get_num_components(); i ++) {
+            average_moler_volume += mole_fractions[i] * components[i].get_molar_volume();
+        }
+        return average_moler_volume;
+    }
+
+    double thermal_velocity(double temperature, unsigned long i) const {
+        return sqrt(8.0 * gas_constant * temperature / M_PI / components[i].get_molecular_weight());
+    }
+
+    double kelvin_length(double temp, StateBuffer const & mole_fractions) const {
+        return 2.0 * surface_tension(mole_fractions) * get_average_molar_volume(mole_fractions) / gas_constant / temp;
+    }
+
+    StateBuffer get_equilibrium_mole_fractions(double temp) const {
+
+        StateBuffer mole_fractions(get_num_components());
+
+        for (unsigned long i = 0; i < get_num_components(); i ++) {
+            mole_fractions[i] = components[i].get_p_sat(temp);
+        }
+
+        double p_sat_sum = std::accumulate(mole_fractions.begin(), mole_fractions.end(), 0.0);
+
+        for (double & mole_frac_i : mole_fractions) {
+            mole_frac_i /= p_sat_sum;
+        }
+
+        return mole_fractions;
     }
 
     // ODE function to be used with the integrator
     void operator()(const StateBuffer & v, StateBuffer & dvdt, const double t) const {
+
+        double v_tot = std::accumulate(v.begin(), v.end(), 0.0);
+
+        if (v_tot > geometry_interface.get_max_liquid_volume())
+            v_tot = geometry_interface.get_max_liquid_volume();
+
         double temp = temperature(t);
-        double l_k = sqrt(2.0 * surface_tension(std::vector<double>()) * components[0].get_molar_volume() / gas_constant / temp);
-        double liquid_volume = v[0];
-        double meniscus_volume = liquid_volume + neck_volume;
-        auto [filling_angle, fa_interpolator] = liquid_geometry_interpolator.volume_to_filling_angle(meniscus_volume);
-        double kappa = liquid_geometry_interpolator.interpolate_kappa(fa_interpolator);
-        double area = liquid_geometry_interpolator.interpolate_area(fa_interpolator);
-        dvdt[0] = 1.0 / 4.0 * area * thermal_velocity(temp) * components[0].get_molar_volume() * components[0].get_p_sat(temp) / avogadro_constant / gas_constant / temp * (saturation(t) - exp(0.5 * l_k * kappa));
-        if (meniscus_volume <= 0.0 && dvdt[0] < 0.0)
-            dvdt[0] = 0.0;
+        auto [area, kappa] = geometry_interface.get_liquid_props(v_tot);
+
+        StateBuffer mole_fractions(get_num_components());
+        if (v_tot <= 0.0)
+            mole_fractions = get_equilibrium_mole_fractions(temp);
+        else {
+            for (unsigned long i = 0; i < get_num_components(); i ++)
+                mole_fractions[i] = v[i] / components[i].get_molar_volume();
+
+            double total_mols = std::accumulate(mole_fractions.begin(), mole_fractions.end(), 0.0);
+
+            for (double & mol_frac : mole_fractions)
+                mol_frac /= total_mols;
+        }
+
+        double l_k = kelvin_length(temp, mole_fractions);
+        for (unsigned long i = 0; i < get_num_components(); i ++)
+            dvdt[i] = 1.0 / 4.0 * area * thermal_velocity(temp, i) * components[i].get_molar_volume()
+                * components[i].get_p_sat(temp) / gas_constant / temp
+                * (saturation(t, i) - mole_fractions[i] * exp(0.5 * l_k * kappa));
+
+        if (v_tot <= 0.0)
+            for (unsigned long i = 0; i < get_num_components(); i ++)
+                if (v_tot <= 0.0 && dvdt[i] < 0.0)
+                    dvdt[i] = 0.0;
+
+        if (v_tot >= geometry_interface.get_max_liquid_volume())
+            for (unsigned long i = 0; i < get_num_components(); i ++)
+                if (dvdt[i] > 0.0)
+                    dvdt[i] = 0.0;
     }
 
 private:
-    const double neck_filling_angle, contact_angle, particle_radius, residence_time;
-    const std::function<double(double)> temperature, saturation;
-    const std::function<double(std::vector<double> const &)> surface_tension;
+    const GeometryInterface geometry_interface;
+    const std::function<double(double)> temperature;
+    const std::function<double(double, unsigned long)> saturation;
+    const std::function<double(StateBuffer const &)> surface_tension;
     const std::vector<Component> components;
-    const GeometryInterpolator neck_geometry_interpolator, liquid_geometry_interpolator;
-    const unsigned long num_components;
-    const double neck_volume;
+
+    const unsigned long n_components;
 };
 
 #endif //MULTICOMPONENT_SYSTEM_H
