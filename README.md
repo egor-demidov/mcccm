@@ -20,3 +20,23 @@ Install the library in a location of choice:
 ```shell
 cmake --install build-release-gnu --prefix install-release-gnu
 ```
+
+### Windows (MSVC compiler)
+
+Download the latest source code from the Git repository:
+```shell
+git clone https://github.com/egor-demidov/mcccm.git
+```
+Change into the source directory and configure with CMake and vcpkg:
+```shell
+cd mcccm && cmake --preset="win" . 
+```
+Build the project:
+```shell
+cmake --build build-win --config Release
+cmake --build build-win --config Debug
+```
+Install the library in a location of choice:
+```shell
+cmake --install build-win --prefix install-win
+```

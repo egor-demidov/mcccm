@@ -24,7 +24,7 @@
     {
       "name": "win",
       "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-debug-win",
+      "binaryDir": "${sourceDir}/build-win",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
         "EMSCRIPTEN": "Off"
