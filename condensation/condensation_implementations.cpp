@@ -35,7 +35,7 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
         const double spherical_equivalent_radius = spherical_surface.get_equivalent_radius(spherical_condensate_volume);
         const double uniform_coating_thickness = spherical_equivalent_radius - r_part;
         const double bare_sector_volume = 2.0 / 3.0 * M_PI * r_part * r_part * r_part * (1.0 - cos(capillary_filling_angle * M_PI / 180.0));
-        const double coated_sector_volume = 2.0 / 3.0 * M_PI * uniform_coating_thickness * uniform_coating_thickness * uniform_coating_thickness * (1.0 - cos(capillary_filling_angle * M_PI / 180.0));
+        const double coated_sector_volume = 2.0 / 3.0 * M_PI * spherical_equivalent_radius * spherical_equivalent_radius * spherical_equivalent_radius * (1.0 - cos(capillary_filling_angle * M_PI / 180.0));
         const double effective_uniform_coating_volume = spherical_condensate_volume - 2.0 * (coated_sector_volume - bare_sector_volume);
         const double uniform_to_capillary_ratio = effective_uniform_coating_volume / capillary_condensate_volume;
         const double core_volume = spherical_surface.get_core_volume() + constant_mean_curvature_surface.get_neck_volume();
@@ -50,7 +50,7 @@ SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun
             capillary_filling_angle,
             uniform_coating_thickness,
             capillary_condensate_volume,
-            spherical_condensate_volume
+            effective_uniform_coating_volume
         };
     }
 }
@@ -70,8 +70,6 @@ unsigned long SingleComponentCapillaryCondensationRun::get_n_points() const {
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_floating_point.hpp>
-
-#include <fmt/format.h>
 
 TEST_CASE("Testing SingleComponentCapillaryCondensationRun", "[SingleComponentCapillaryCondensationRun]") {
     // Geometry interface
