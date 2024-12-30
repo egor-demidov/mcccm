@@ -2,8 +2,8 @@
 // Created by egor on 12/15/24.
 //
 
-#include "single_component_system.h"
-#include "../geometry/geometry.h"
+#include <mcccm/condensation/single_component_system.h>
+#include <mcccm/geometry/geometry.h>
 
 // Unit tests below, compiled only is this is a test target
 // available only in a native build

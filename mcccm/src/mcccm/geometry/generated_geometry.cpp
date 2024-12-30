@@ -1,6 +1,6 @@
 // Automatically generated file by generate_meniscus.py
 
-#include "geometry.h"
+#include <mcccm/geometry/geometry.h>
 
 constexpr Geometry<81, 81> generated_geometry {
 	.begin_fa = 10.0,

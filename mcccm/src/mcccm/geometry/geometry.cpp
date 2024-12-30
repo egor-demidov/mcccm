@@ -2,7 +2,7 @@
 // Created by egor on 12/14/24.
 //
 
-#include "geometry.h"
+#include <mcccm/geometry/geometry.h>
 
 #include <fmt/format.h>
 

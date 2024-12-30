@@ -3,10 +3,7 @@
 !.gitignore
 !CMakeLists.txt
 !*.json
-!*.h
-!*.cpp
-!*.c
-!*.js
-!*.py
-!geometry/
-!condensation/
+!mcccm/
+!mcccm/**
+!cmake/
+!cmake/**

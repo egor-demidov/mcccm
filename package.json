@@ -1,7 +1,0 @@
-{
-  "name": "mcccm",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "driver.js",
-  "dependencies": { }
-}

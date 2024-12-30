@@ -4,8 +4,8 @@
 
 #include <cmath>
 
-#include "component.h"
-#include "../physical_constants.h"
+#include <mcccm/condensation/component.h>
+#include <mcccm/physical_constants.h>
 
 Component::Component(std::string name, double density, double molecular_weight, std::function<double(double)> p_sat)
     : name{std::move(name)}

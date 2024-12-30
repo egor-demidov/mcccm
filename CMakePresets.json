@@ -2,34 +2,6 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "debug-emscripten",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-debug-emscripten",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{EMSDK_ROOT}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "EMSCRIPTEN": "On"
-      },
-      "environment": {
-        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{EMSDK_ROOT}/upstream/bin:$penv{PATH}"
-      }
-    },
-    {
-      "name": "release-emscripten",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build-release-emscripten",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{EMSDK_ROOT}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
-        "CMAKE_BUILD_TYPE": "Release",
-        "EMSCRIPTEN": "On"
-      },
-      "environment": {
-        "PATH": "$penv{EMSDK_ROOT}:$penv{EMSDK_ROOT}/upstream/emscripten:$penv{EMSDK_ROOT}/upstream/bin:$penv{PATH}"
-      }
-    },
-    {
       "name": "debug-gnu",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build-debug-gnu",

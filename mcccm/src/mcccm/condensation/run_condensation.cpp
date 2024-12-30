@@ -4,10 +4,10 @@
 
 #include <fmt/format.h>
 
-#include "run_condensation.h"
-#include "component.h"
-#include "../geometry/geometry.h"
-#include "single_component_system.h"
+#include <mcccm/condensation/run_condensation.h>
+#include <mcccm/condensation/component.h>
+#include <mcccm/geometry/geometry.h>
+#include <mcccm/condensation/single_component_system.h>
 
 // Unit tests below, compiled only is this is a test target
 // available only in a native build

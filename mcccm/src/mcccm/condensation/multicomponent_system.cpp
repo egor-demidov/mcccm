@@ -2,7 +2,7 @@
 // Created by egor on 12/14/24.
 //
 
-#include "multicomponent_system.h"
+#include <mcccm/condensation/multicomponent_system.h>
 
 MulticomponentSystem::MulticomponentSystem(
     double neck_filling_angle,

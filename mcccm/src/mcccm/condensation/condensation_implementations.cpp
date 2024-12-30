@@ -2,7 +2,7 @@
 // Created by egor on 12/22/24.
 //
 
-#include "condensation_implementations.h"
+#include <mcccm/condensation/condensation_implementations.h>
 
 SingleComponentCapillaryCondensationRun::SingleComponentCapillaryCondensationRun(
     std::function<double(double)> const & temperature,
