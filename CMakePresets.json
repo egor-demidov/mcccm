@@ -12,12 +12,21 @@
       }
     },
     {
-      "name": "debug-win",
+      "name": "release-gnu",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build-release-gnu",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_BUILD_TYPE": "Release",
+        "EMSCRIPTEN": "Off"
+      }
+    },
+    {
+      "name": "win",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build-debug-win",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "CMAKE_BUILD_TYPE": "Debug",
         "EMSCRIPTEN": "Off"
       }
     }
