@@ -8,6 +8,8 @@
 #include <array>
 #include <exception>
 #include <numeric>
+#include <limits>
+
 
 template <unsigned long num_fa, unsigned long num_ca>
 struct Geometry {

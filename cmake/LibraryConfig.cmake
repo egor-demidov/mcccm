@@ -12,6 +12,9 @@ add_library(${PROJECT_NAME}::${LIBRARY_NAME} ALIAS ${LIBRARY_NAME})
 # C++20
 target_compile_features(${LIBRARY_NAME} PUBLIC cxx_std_20)
 
+# Link the dependencies
+target_link_libraries(${LIBRARY_NAME} PRIVATE fmt::fmt Boost::numeric_odeint)
+
 # Add definitions for targets
 # Values:
 #   - Debug  : -DFOO_DEBUG=1
