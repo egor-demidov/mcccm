@@ -45,8 +45,8 @@ cmake --install build-release-win --prefix install-release-win
 
 ## Using the library in a CMake project
 
-When configuring your CMake-based project, specify the location of the install
-ed library through
+When configuring your CMake-based project, specify the location where MCCCM was installed
+through
 the `mcccm_DIR` CMake cache variable:
 ```shell
 cmake --Dmcccm_DIR=<mcccm_install_dir>/lib/cmake/mcccm <remaining_config_command>
