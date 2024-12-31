@@ -73,7 +73,7 @@ auto p_sat_custom_component = [](double temperature) -> double {
     return 1.0e5 * pow(10.0, 6.07936 - 2692.187 / (temperature - 17.94));
 };
 ```
-The define you custom component as:
+Then define you custom component as:
 ```c++
 Component PG {
     "Propylene glycol",     // Component name
