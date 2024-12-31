@@ -22,7 +22,7 @@
       }
     },
     {
-      "name": "win-debug",
+      "name": "debug-win",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build-debug-win",
       "cacheVariables": {
@@ -32,7 +32,7 @@
       }
     },
     {
-      "name": "win-release",
+      "name": "release-win",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build-release-win",
       "cacheVariables": {
