@@ -8,7 +8,7 @@ Download the latest source code from the Git repository:
 ```shell
 git clone https://github.com/egor-demidov/mcccm.git
 ```
-Change into the source directory and configure with CMake and vcpkg:
+Change into the source directory and configure with CMake, vcpkg, and Ninja:
 ```shell
 cd mcccm && cmake --preset="release-gnu" . 
 ```
@@ -27,16 +27,15 @@ Download the latest source code from the Git repository:
 ```shell
 git clone https://github.com/egor-demidov/mcccm.git
 ```
-Change into the source directory and configure with CMake and vcpkg:
+Change into the source directory and configure with CMake, vcpkg, and Ninja:
 ```shell
-cd mcccm; cmake --preset="win" . 
+cd mcccm; cmake --preset="release-win" . 
 ```
 Build the project:
 ```shell
-cmake --build build-win --config Release
-cmake --build build-win --config Debug
+cmake --build build-release-win
 ```
 Install the library in a location of choice:
 ```shell
-cmake --install build-win --prefix install-win
+cmake --install build-release-win --prefix install-release-win
 ```
