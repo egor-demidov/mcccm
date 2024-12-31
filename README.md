@@ -65,7 +65,7 @@ Include the header:
 ```c++
 #include <mcccm/condensation/condensation_implementations.h>
 ```
-A number of components are pre-defined in the `components::` and `components::MOSAIC` namespaces.
+A number of components are pre-defined in the `components::` and `components::MOSAIC::` namespaces.
 Select one of those or define a custom component. To define a custom component, you need a function that computes
 the saturated vapor pressure (in Pascals) of the component as a function of temperature. This can be implemented as a lambda function:
 ```c++
