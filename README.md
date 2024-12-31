@@ -82,7 +82,7 @@ Component PG {
     p_sat_custom_component  // Saturated vapor presure function, Pa(K) 
 };
 ```
-To invoke single component condensation, a more parameters need to be defined.
+To invoke single component condensation, some more parameters need to be defined.
 Saturation and temperature (in Kelvins) as functions of time (in seconds)
 need to be provided:
 ```c++
