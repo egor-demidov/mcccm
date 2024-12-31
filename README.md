@@ -29,7 +29,7 @@ git clone https://github.com/egor-demidov/mcccm.git
 ```
 Change into the source directory and configure with CMake and vcpkg:
 ```shell
-cd mcccm && cmake --preset="win" . 
+cd mcccm; cmake --preset="win" . 
 ```
 Build the project:
 ```shell
